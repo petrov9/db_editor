@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+        xsi:schemaLocation="http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx-4.0.xsd"
+        xmlns:tx="http://www.springframework.org/schema/tx"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:beans="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.springframework.org/schema/mvc"
+        xmlns:mvc="http://www.springframework.org/schema/mvc">
+    <mvc:default-servlet-handler/>
+
+    <annotation-driven/>
+
+    <beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <beans:property value="/WEB-INF/view" name="prefix"/>
+        <beans:property value=".jsp" name="suffix"/>
+    </beans:bean>
+
+    <beans:bean class="org.springframework.jdbc.datasource.DriverManagerDataSource" id="dataSource">
+        <beans:property value="org.postgresql.Driver" name="driverClassName"/>
+        <beans:property value="jdbc:postgresql://localhost:5432/CheerSport" name="url"/>
+        <beans:property name="username" value="postgres"/>
+        <beans:property name="password" value="Ksenia02"/>
+    </beans:bean>
+
+    <beans:bean class="org.springframework.orm.hibernate4.LocalSessionFactoryBean"
+                id="hibernate4AnnotatedSessionFactory">
+        <beans:property name="dataSource" ref="dataSource"/>
+        <beans:property name="annotatedClasses">
+            <beans:list>
+                <beans:value>com.cheersport.model.Club</beans:value>
+                <beans:value>com.cheersport.model.Coach</beans:value>
+                <beans:value>com.cheersport.model.Competition</beans:value>
+                <beans:value>com.cheersport.model.Sportsman</beans:value>
+                <beans:value>com.cheersport.model.Takepart</beans:value>
+                <beans:value>com.cheersport.model.Team</beans:value>
+            </beans:list>
+        </beans:property>
+        <beans:property name="hibernateProperties">
+            <beans:props>
+                <beans:prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQL82Dialect</beans:prop>
+                <beans:prop key="connection.driver_class">org.postgresql.Driver</beans:prop>
+                <beans:prop key="connection.url">jdbc:postgresql://localhost:5432/CheerSport</beans:prop>
+                <beans:prop key="hibernate.show_sql">true</beans:prop>
+                <beans:prop key="generateDdl">true</beans:prop>
+                <beans:prop key="hbm2ddl.auto">update</beans:prop>
+            </beans:props>
+        </beans:property>
+    </beans:bean>
+
+    <!--&lt;!&ndash; Sportsman &ndash;&gt;
+
+    <beans:bean class="com.cheersport.dao.SportsmanDao" id="sportsmanDAO">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory"/>
+    </beans:bean>
+
+    <beans:bean class="com.cheersport.service.SportsmanService" id="sportsmanService">
+        <beans:property name="sportsmanDao" ref="sportsmanDAO"/>
+    </beans:bean>
+
+    <beans:bean class="com.cheersport.client.SportsmanController" id="sportsmanController">
+        <beans:property name="sportsmanService" ref="sportsmanService"/>
+    </beans:bean>
+
+    &lt;!&ndash; Club &ndash;&gt;
+
+    <beans:bean class="com.cheersport.dao.ClubDao" id="clubDAO">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory"/>
+    </beans:bean>
+
+    <beans:bean class="com.cheersport.service.ClubService" id="clubService">
+        <beans:property name="clubDao" ref="clubDAO"/>
+    </beans:bean>
+
+    <beans:bean class="com.cheersport.client.ClubController" id="clubController">
+        <beans:property name="clubService" ref="clubService"/>
+    </beans:bean>
+
+    &lt;!&ndash; Coach &ndash;&gt;
+
+    <beans:bean class="com.cheersport.dao.CoachDao" id="coachDAO">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory"/>
+    </beans:bean>
+
+    <beans:bean class="com.cheersport.service.CoachService" id="coachService">
+        <beans:property name="coachDao" ref="coachDAO"/>
+    </beans:bean>
+
+    <beans:bean class="com.cheersport.client.CoachController" id="coachController">
+        <beans:property name="coachService" ref="coachService"/>
+    </beans:bean>
+
+    &lt;!&ndash; Competition &ndash;&gt;
+
+    <beans:bean class="com.cheersport.dao.CompetitionDao" id="competitionDAO">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory"/>
+    </beans:bean>
+
+    <beans:bean class="com.cheersport.service.CompetitionService" id="competitionService">
+        <beans:property name="competitionDao" ref="competitionDAO"/>
+    </beans:bean>
+
+    <beans:bean class="com.cheersport.client.CompetitionController" id="competitionController">
+        <beans:property name="competitionService" ref="competitionService"/>
+    </beans:bean>
+
+    &lt;!&ndash; Takepart &ndash;&gt;
+
+    <beans:bean class="com.cheersport.dao.TakepartDao" id="takepartDAO">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory"/>
+    </beans:bean>
+
+    <beans:bean class="com.cheersport.service.TakepartService" id="takepartService">
+        <beans:property name="takepartDao" ref="takepartDAO"/>
+    </beans:bean>
+
+    <beans:bean class="com.cheersport.client.TakepartController" id="takepartController">
+        <beans:property name="takepartService" ref="takepartService"/>
+    </beans:bean>
+
+    &lt;!&ndash; Team &ndash;&gt;
+
+    <beans:bean class="com.cheersport.dao.TeamDao" id="teamDAO">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory"/>
+    </beans:bean>
+
+    <beans:bean class="com.cheersport.service.TeamService" id="teamService">
+        <beans:property name="teamDao" ref="teamDAO"/>
+    </beans:bean>
+
+    <beans:bean class="com.cheersport.client.TeamController" id="teamController">
+        <beans:property name="teamService" ref="teamService"/>
+    </beans:bean>-->
+
+    <context:component-scan base-package="com.cheersport"/>
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <beans:bean class="org.springframework.orm.hibernate4.HibernateTransactionManager" id="transactionManager">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory"/>
+    </beans:bean>
+</beans:beans>
